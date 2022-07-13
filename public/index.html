@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="skeleton.css">
+	<title>Cifar 10 simple machine learning</title>
+</head>
+<body>
+	<h5>Image classification detection using <a href="https://www.cs.toronto.edu/~kriz/cifar.html">Cifar 10</a> dataset and <a href="https://www.tensorflow.org/">TensorFlow</a></h5>
+	<hr>
+	<p>Upload image to classify:</p>
+	<input type="file" id="upload-input" hidden>
+	<button class="button-primary" id="upload-button">Choose File</button>
+	<p class="hide" id="main-prediction"></p>
+	<p class="hide" id="other-predictions"></p>
+	<p class="hide" id="accuracy"></p>
+	<script>
+		const URL = 'http://localhost:8000'
+		let uploadInput = document.getElementById('upload-input');
+		let uploadButton = document.getElementById('upload-button');
+		let mainPrediction = document.getElementById('main-prediction');
+		let otherPredictions = document.getElementById('other-predictions');
+		let accuracy = document.getElementById('accuracy');
+
+		uploadButton.onclick = () => {
+			uploadInput.click();
+		};
+
+		uploadInput.onchange = () => {
+			uploadButton.innerText = 'Processing...';
+			uploadButton.disabled = true;
+
+			var file = uploadInput.files[0];
+
+			var options = {
+				method: 'POST',
+				body: file
+			};
+
+			fetch(URL + '/' + file.name, options)
+				.then(res => res.json())
+				.then(res => {
+					uploadButton.innerText = 'Choose File';
+					uploadButton.disabled = false;
+
+					mainPrediction.className = '';
+					otherPredictions.className = '';
+					accuracy.className = '';
+
+					mainPrediction.innerHTML = '<big><b>Most probable prediction: </b>' + res.predictions[0] + '</b>'
+
+					otherPredictions.innerHTML = '<small><b>Less probable prediction (highest to lowest): </b>' + res.predictions.slice(1).join(', ') + '</small>';
+
+					accuracy.innerHTML = '<small><b>Trained model accuracy: </b>' + (Math.floor(res.evaluation * 1000) / 10) + '% </small>'
+				})
+				.catch(error => console.log('error', error));
+		}
+	</script>
+</body>
+
+</html>
