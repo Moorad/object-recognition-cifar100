@@ -7,12 +7,12 @@ using [Tensorflow](https://www.tensorflow.org/) and [Skeleton](http://getskeleto
 ```
 pip install -r requirements.txt
 ```
-3. Run script.py
+3. Run webserver.py
 ```
-py script.py
+py webserver.py
 ```
 
-script.py will start up a local server at http://localhost:8000. It will then search for a saved model to load if not found it will train a new model (Takes around 10 min). After training/loading the model it will be ready to serve. Navigate to http://localhost:8000/ and upload an image to test it out
+webserver.py will start up a local server at http://localhost:8000. It will then search for a saved model to load if not found it will train a new model (Takes around 10 min). After training/loading the model it will be ready to serve. Navigate to http://localhost:8000/ and upload an image to test it out
 
 ### Google Colab
 You can run the model through Google colab instead!
