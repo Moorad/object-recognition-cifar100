@@ -1,12 +1,9 @@
 from http.server import HTTPServer, BaseHTTPRequestHandler
 from os import curdir, sep, path, remove, makedirs
 import json
-from keras.optimizers import Adam
-from keras.losses import CategoricalCrossentropy
-from keras.models import Sequential, load_model
-from keras.layers import Dense, Flatten, Conv2D, MaxPool2D, Dropout
-from keras.utils import to_categorical
-from keras.datasets import cifar10
+import tensorflow as tf
+from tensorflow import keras
+from tensorflow.keras import optimizers, losses, models, layers, utils, datasets
 import matplotlib.pyplot as plt
 import numpy as np
 from skimage.transform import resize
@@ -20,11 +17,11 @@ model = None
 evalutation = None
 
 # Load data
-(x_train, y_train), (x_test, y_test) = cifar10.load_data()
+(x_train, y_train), (x_test, y_test) = datasets.cifar10.load_data()
 
 # Convert labels to a set of 10 numbers
-y_train_one_hot = to_categorical(y_train)
-y_test_one_hot = to_categorical(y_test)
+y_train_one_hot = utils.to_categorical(y_train)
+y_test_one_hot = utils.to_categorical(y_test)
 
 # Normalise pixel values
 x_train = x_train / 255
@@ -35,12 +32,8 @@ x_test = x_test / 255
 
 def check_model():
     global model, accuracy
-    if (model is None):
-        try:
-            model = load_model('saved_model/')
-        except (IOError):
-            print('No saved model found. Training new model...')
-            train_model()
+    print('Training new model...')
+    train_model()
 
     # After loading/training calculate accuracy
     accuracy = model.evaluate(x_train, y_train_one_hot)[1]
@@ -52,34 +45,34 @@ def train_model():
     global model, x_train, y_train, x_test, y_test, y_train_one_hot, y_test_one_hot
 
     # Creating model
-    model = Sequential()
+    model = models.Sequential()
 
     # Convolution layer
-    model.add(Conv2D(32, (5, 5), activation='relu', input_shape=(32, 32, 3)))
+    model.add(layers.Conv2D(32, (5, 5), activation='relu', input_shape=(32, 32, 3)))
     # Pooling layer
-    model.add(MaxPool2D(pool_size=(2, 2)))
+    model.add(layers.MaxPool2D(pool_size=(2, 2)))
     # Another convolution layer
-    model.add(Conv2D(32, (5, 5), activation='relu'))
+    model.add(layers.Conv2D(32, (5, 5), activation='relu'))
     # Another pooling layer
-    model.add(MaxPool2D(pool_size=(2, 2)))
+    model.add(layers.MaxPool2D(pool_size=(2, 2)))
     # Flatten layer
-    model.add(Flatten())
+    model.add(layers.Flatten())
     # Adding 1k neurons
-    model.add(Dense(1000, activation='relu'))
+    model.add(layers.Dense(1000, activation='relu'))
     # Drop out layer
-    model.add(Dropout(0.5))
+    model.add(layers.Dropout(0.5))
     # Adding 500 neurons
-    model.add(Dense(500, activation='relu'))
+    model.add(layers.Dense(500, activation='relu'))
     # Drop out layer (again)
-    model.add(Dropout(0.5))
+    model.add(layers.Dropout(0.5))
     # Adding 250 neurons
-    model.add(Dense(250, activation='relu'))
+    model.add(layers.Dense(250, activation='relu'))
     # Adding 10 neurons
-    model.add(Dense(10, activation='softmax'))
+    model.add(layers.Dense(10, activation='softmax'))
 
     # Model compilation
-    model.compile(loss=CategoricalCrossentropy(),
-                  optimizer=Adam(),
+    model.compile(loss=losses.CategoricalCrossentropy(),
+                  optimizer=optimizers.Adam(),
                   metrics=['accuracy'])
 
     # Train model
@@ -88,8 +81,6 @@ def train_model():
               epochs=10,
               validation_split=0.2)
 
-    # save model
-    model.save('saved_model/')
 
 
 # Run a prediciton on the file passed in
@@ -118,7 +109,7 @@ def run_model(filename):
 
     return json.dumps({
         'predictions': list(map(lambda x: classification[x], list_index)),
-        'evaluation': accuracy
+        'evaluation': str(accuracy)
     })
 
 # Handle get and post requests
