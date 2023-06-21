@@ -5,7 +5,7 @@ const ctx = canvas.getContext("2d", {
     antialias: false,
 });
 
-const CELLS_IN_ROW = 500;
+const CELLS_IN_ROW = 100;
 const GENERATION_LENGTH = 80; // in ms
 const CELL_SIZE = Math.ceil(window.innerWidth / CELLS_IN_ROW);
 const CELLS_IN_COLUMN = Math.ceil(window.innerHeight / CELL_SIZE);
