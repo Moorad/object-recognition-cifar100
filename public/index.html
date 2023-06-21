@@ -4,11 +4,14 @@
 	<meta charset="UTF-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<link rel="stylesheet" href="skeleton.css">
+	<link rel="stylesheet" href="style.css">
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap" rel="stylesheet">
 	<title>Cifar 10 simple machine learning</title>
 </head>
 <body>
-	<h5>Image classification detection using <a href="https://www.cs.toronto.edu/~kriz/cifar.html">Cifar 10</a> dataset and <a href="https://www.tensorflow.org/">TensorFlow</a></h5>
+	<!-- <h5>Image classification detection using <a href="https://www.cs.toronto.edu/~kriz/cifar.html">Cifar 10</a> dataset and <a href="https://www.tensorflow.org/">TensorFlow</a></h5>
 	<hr>
 	<p>Upload image to classify:</p>
 	<input type="file" id="upload-input" hidden>
@@ -57,7 +60,16 @@
 				})
 				.catch(error => console.log('error', error));
 		}
-	</script>
+	</script> -->
+	<canvas class="gol-background"></canvas>
+	<div class="main-container">
+		<div class="status-container entrance-animation">
+			<div class="status-title">Status</div>
+			<div class="status-description">Status description</div>
+		</div>
+	</div>
+	<script src="game_of_life.js"></script>
+	<script src="index.js"></script>
 </body>
 
 </html>
